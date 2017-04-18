@@ -21,10 +21,18 @@ public class PlanetControl : MonoBehaviour {
 		Rigidbody solb = GameObject.Find ("sola").GetComponent<Rigidbody> ();
 		Rigidbody solc = GameObject.Find ("solc").GetComponent<Rigidbody> ();
 		Rigidbody planet = GameObject.Find ("planet").GetComponent<Rigidbody> ();
-		sola.AddForce (3000.0f, 5066.0f, -2005.0f);
-		solb.AddForce (-3000.0f, -9000.0f, 1000.0f);
-		solc.AddForce (20.0f, 00.0f, -7000.0f);
+		Vector3 solaForce = new Vector3 (3000.0f, 5066.0f, -20005.0f);
+		Vector3 solbForce = new Vector3 (-3000.0f, -9000.0f, 1000.0f);
+		Vector3 solcForce = new Vector3 (20.0f, 00.0f, -7000.0f);
+		Vector3 sum = solaForce + solbForce + solcForce;
+		solaForce -= sum / 3;
+		solbForce -= sum / 3;
+		solcForce -= sum / 3;
+		sola.AddForce (solaForce);
+		solb.AddForce (solbForce);
+		solc.AddForce (solcForce);
 		planet.AddForce (20.0f, 00.0f, 20.0f);
+		
 		GameObject.Find ("planetcam").GetComponent<Camera> ().transform.parent = planet.transform;
 
 		celestialBodies = new List<Rigidbody> ();

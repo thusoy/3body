@@ -6,6 +6,14 @@ public class PlanetControl : MonoBehaviour {
 	private List<Rigidbody> celestialBodies;
 	// gravitational constant
 	private double G = 1.6 * Mathf.Pow(10, 0);
+	private float turnSpeed = 4.0f; // Speed of camera turning when mouse moves in along an axis
+	private bool isRotating;
+	private Camera camera;
+	private Vector3 mouseOrigin; // Position of cursor when mouse dragging starts
+
+	private void Awake () {
+		camera = GetComponentInChildren<Camera> ();
+	}
 
 	void Start () {
 		// Set initial velocities
@@ -28,6 +36,11 @@ public class PlanetControl : MonoBehaviour {
 
 	// Use this for initialization
 	void FixedUpdate () {
+		ApplyGravity ();
+		RotateCamera ();
+	}
+
+	void ApplyGravity () {
 		foreach (Rigidbody body in celestialBodies) {
 			foreach (Rigidbody otherBody in celestialBodies) {
 				if (otherBody == body) {
@@ -38,6 +51,24 @@ public class PlanetControl : MonoBehaviour {
 
 				body.AddForce(force);
 			}
+		}
+	}
+
+	void RotateCamera () {
+		// Get the left mouse button
+		if(Input.GetMouseButtonDown(0)) {
+			// Get mouse origin
+			mouseOrigin = Input.mousePosition;
+			isRotating = true;
+		}
+
+		// Rotate camera along X and Y axis
+		if (!Input.GetMouseButton(0)) isRotating=false;
+		if (isRotating) {
+			Vector3 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition - mouseOrigin);
+
+			transform.RotateAround(transform.position, transform.right, -pos.y * turnSpeed);
+			transform.RotateAround(transform.position, Vector3.up, pos.x * turnSpeed);
 		}
 	}
 }
